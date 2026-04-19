@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block title %}Contact Us - Krishat Pharma Industries Ltd{% endblock %}
+
+{% block content %}
+<section class="py-5">
+    <div class="container">
+        <h1 class="text-center fw-bold mb-5">Contact Us</h1>
+        
+        <div class="row g-4">
+            <div class="col-lg-5">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <h4 class="mb-4">Let's Talk</h4>
+                        <div class="mb-4">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="contact-icon me-3"><i class="bi bi-geo-alt"></i></div>
+                                <div>
+                                    <strong>Address</strong>
+                                    <p class="mb-0 text-muted">No.24, Adeola Adeleye Street, Off Coker Road, Ilupeju, Lagos Nigeria</p>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="contact-icon me-3"><i class="bi bi-envelope"></i></div>
+                                <div>
+                                    <strong>Email</strong>
+                                    <p class="mb-0 text-muted">info@krishatpharma.com</p>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <div class="contact-icon me-3"><i class="bi bi-telephone"></i></div>
+                                <div>
+                                    <strong>Phone</strong>
+                                    <p class="mb-0 text-muted">+(234)-813-855-0050</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <h4 class="mb-3">Follow Us</h4>
+                        <div class="d-flex gap-2">
+                            <a href="#" class="btn btn-primary"><i class="bi bi-facebook"></i></a>
+                            <a href="#" class="btn btn-primary"><i class="bi bi-twitter-x"></i></a>
+                            <a href="#" class="btn btn-primary"><i class="bi bi-linkedin"></i></a>
+                            <a href="#" class="btn btn-primary"><i class="bi bi-instagram"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-7">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <h4 class="mb-4">Send us a Message</h4>
+                        <form method="POST" action="{{ url_for('contact') }}">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Your Name</label>
+                                    <input type="text" class="form-control" name="name" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Email Address</label>
+                                    <input type="email" class="form-control" name="email" required>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Phone Number</label>
+                                <input type="tel" class="form-control" name="phone">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Subject</label>
+                                <input type="text" class="form-control" name="subject">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Message</label>
+                                <textarea class="form-control" name="message" rows="5" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Send Message</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mt-5">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3962.717541469591!2d3.3613!3d6.5413!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x103b8d7e5f0e0e0d%3A0x0!2sIlupeju%2C%20Lagos!5e0!3m2!1sen!2sng!4v1645564654654!5m2!1sen!2sng" 
+                    width="100%" height="400" style="border:0;" allowfullscreen="" loading="lazy" class="rounded shadow"></iframe>
+        </div>
+    </div>
+</section>
+
+<style>
+.contact-icon {
+    width: 45px;
+    height: 45px;
+    background: #990b6e;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+}
+</style>
+{% endblock %}

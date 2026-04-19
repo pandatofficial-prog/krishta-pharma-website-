@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}Careers - Krishat Pharma Industries Ltd{% endblock %}
+
+{% block content %}
+<section class="py-5">
+    <div class="container">
+        <h1 class="text-center fw-bold mb-5">Join Our Team</h1>
+        
+        <div class="row g-5 align-items-center mb-5">
+            <div class="col-lg-6">
+                <img src="https://krishatpharma.com/images/home-img2.jpg" alt="Team" class="img-fluid rounded shadow">
+            </div>
+            <div class="col-lg-6">
+                <h2 class="fw-bold mb-4">Build Your Career with Us</h2>
+                <p class="text-muted">At Krishat Pharma Industries Ltd, we believe in the power of dedicated professionals. Join our team of highly qualified chemists and researchers working towards a common goal - making drugs that actually cure.</p>
+                <p class="text-muted">We offer competitive benefits, continuous learning opportunities, and a chance to be part of Nigeria's leading pharmaceutical company.</p>
+            </div>
+        </div>
+        
+        <div class="card border-0 shadow">
+            <div class="card-body p-4">
+                <h3 class="mb-4">Why Work With Us?</h3>
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <h5><i class="bi bi-award text-primary-custom me-2"></i>Industry Leader</h5>
+                        <p class="text-muted">First soft gelatin products producers in Nigeria</p>
+                    </div>
+                    <div class="col-md-4">
+                        <h5><i class="bi bi-laptop text-primary-custom me-2"></i>Modern Facilities</h5>
+                        <p class="text-muted">Fully C-GMP compliant facility</p>
+                    </div>
+                    <div class="col-md-4">
+                        <h5><i class="bi bi-people text-primary-custom me-2"></i>Great Team</h5>
+                        <p class="text-muted">Work with the best professionals</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="text-center mt-5">
+            <a href="{{ url_for('job_openings') }}" class="btn btn-primary btn-lg">View Available Positions</a>
+        </div>
+    </div>
+</section>
+{% endblock %}
