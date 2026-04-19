@@ -4,107 +4,200 @@
 
 {% block extra_css %}
 <style>
-    .hero-slider {
-        position: relative;
-        height: 600px;
-        overflow: hidden;
-    }
-    .slide {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
+    .hero-section {
+        background: url('https://krishatpharma.com/assets/images/slide-1.jpg') no-repeat center center;
         background-size: cover;
-        background-position: center;
-        display: flex;
-        align-items: center;
+        padding: 140px 0;
+        color: white;
+        position: relative;
     }
-    .slide::before {
+    .hero-section::before {
         content: '';
         position: absolute;
         top: 0;
         left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0,0,0,0.4);
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(180deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.5) 100%);
     }
-    .slide-content {
+    .hero-section .container {
         position: relative;
         z-index: 2;
+    }
+    .hero-section-2 {
+        background: url('https://krishatpharma.com/assets/images/slide-2.jpg') no-repeat center center;
+        background-size: cover;
+        padding: 140px 0;
         color: white;
+        position: relative;
     }
-    .feature-box {
+    .hero-section-2::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(180deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.5) 100%);
+    }
+    .hero-section-2 .container {
+        position: relative;
+        z-index: 2;
+    }
+.hero-content {
+        background: rgba(255, 255, 255, 0.4);
+        border-radius: 12px;
+        padding: 40px;
+    }
+    .hero-content h1 {
+        font-size: 2.2rem;
+        color: #003d80;
+    }
+    .hero-content p {
+        font-size: 1.1rem;
+        color: #333333;
+    }
+    .hero-content h1 {
+        text-shadow: 3px 3px 6px rgba(0,0,0,0.8);
+        letter-spacing: 1px;
+    }
+    .hero-content p {
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+        font-size: 1.25rem;
+        font-weight: 500;
+    }
+    .slide-indicator {
+        width: 12px;
+        height: 12px;
+        background: rgba(255,255,255,0.5);
+        border-radius: 50%;
+        border: 2px solid white;
+    }
+    .slide-indicator.active {
+        background: white;
+    }
+    .feature-card {
+        border: 1px solid var(--border);
+        border-radius: 8px;
         transition: all 0.3s;
-        border-radius: 15px;
-        overflow: hidden;
+        background: var(--white);
     }
-    .feature-box:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    .feature-card:hover {
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        transform: translateY(-5px);
+    }
+    .feature-icon {
+        width: 70px;
+        height: 70px;
+        background: linear-gradient(135deg, #e7f1ff 0%, #cce5ff 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto;
+    }
+    .feature-icon i {
+        font-size: 1.8rem;
+        color: var(--primary);
+    }
+    .product-card {
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        overflow: hidden;
+        transition: all 0.3s;
+        background: var(--white);
+    }
+    .product-card:hover {
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    .product-card img {
+        height: 160px;
+        object-fit: contain;
+        padding: 20px;
+        background: #f8f9fa;
     }
     .section-title {
         position: relative;
-        display: inline-block;
     }
     .section-title::after {
         content: '';
         position: absolute;
-        bottom: -10px;
+        bottom: -15px;
         left: 50%;
         transform: translateX(-50%);
-        width: 60px;
+        width: 50px;
         height: 3px;
-        background: #990b6e;
+        background: var(--primary);
     }
-    .nafdac-badge {
-        background: linear-gradient(135deg, #990b6e 0%, #8c0038 100%);
-        color: white;
-        padding: 40px 30px;
-        border-radius: 15px;
+    .corporate-card {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+        border-radius: 10px;
+        padding: 40px;
     }
-    .product-card {
-        border: none;
-        border-radius: 15px;
-        overflow: hidden;
-        transition: all 0.3s;
+    .stats-item {
+        text-align: center;
+        padding: 30px;
     }
-    .product-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+    .stats-item h2 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--primary);
     }
-    .product-card img {
-        height: 180px;
-        object-fit: cover;
+    .stats-item p {
+        color: var(--gray);
+        font-size: 14px;
     }
-    .owl-nav button {
-        background: #990b6e !important;
-        color: white !important;
+    .carousel-control-prev-icon,
+    .carousel-control-next-icon {
+        background-color: rgba(255,255,255,0.9);
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        background-size: 50%;
+        background-repeat: no-repeat;
+        background-position: center;
+    }
+    .carousel-control-prev-icon {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%230056b3'%3e%3cpath d='M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z'/%3e%3c/svg%3e");
+    }
+    .carousel-control-next-icon {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%230056b3'%3e%3cpath d='M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+    }
+    .carousel-indicators button {
+        background-color: var(--primary);
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div id="heroCarousel" class="carousel slide hero-slider" data-bs-ride="carousel">
+<div id="heroCarousel" class="carousel slide" data-bs-ride="carousel">
     <div class="carousel-inner">
         <div class="carousel-item active">
-            <div class="slide" style="background-image: url('https://krishatpharma.com/assets/images/slide-1.jpg');">
+            <div class="hero-section">
                 <div class="container">
-                    <div class="slide-content">
-                        <h1 class="display-3 fw-bold">Evaluation of the Current Safety</h1>
-                        <p class="lead mb-4">Krishat Pharma Industries Ltd aims to create the most outstanding and all care centers in the drugs and pharmaceutical sector.</p>
-                        <a href="{{ url_for('about') }}" class="btn btn-lg" style="background-color: #990b6e; color: white;">Learn More</a>
+                    <div class="row align-items-center">
+                        <div class="col-lg-8">
+                            <div class="hero-content">
+                                <h1 class="display-5 fw-bold mb-3">Evaluation of the Current Safety</h1>
+                                <p class="lead mb-4">Krishat Pharma Industries Ltd aims to create the most outstanding and all care centers in the drugs and pharmaceutical sector.</p>
+                                <a href="{{ url_for('about') }}" class="btn btn-primary btn-lg px-4 py-3 fw-bold">Learn More <i class="bi bi-arrow-right ms-2"></i></a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
         <div class="carousel-item">
-            <div class="slide" style="background-image: url('https://krishatpharma.com/assets/images/slide-2.jpg');">
+            <div class="hero-section-2">
                 <div class="container">
-                    <div class="slide-content text-end">
-                        <h1 class="display-3 fw-bold">Laboratory Priority Services Delivered</h1>
-                        <p class="lead mb-4">Operating from a fully C-GMP Facility in Oyo state, we have a wide distribution network that is second to none and runs across the nation.</p>
-                        <a href="{{ url_for('distribution') }}" class="btn btn-lg" style="background-color: #990b6e; color: white;">Distribution Network</a>
+                    <div class="row align-items-center">
+                        <div class="col-lg-8">
+                            <div class="hero-content">
+                                <h1 class="display-5 fw-bold mb-3">Laboratory Priority Services Delivered</h1>
+                                <p class="lead mb-4">Operating from a fully C-GMP Facility in Oyo state, we have a wide distribution network that is second to none.</p>
+                                <a href="{{ url_for('distribution') }}" class="btn btn-primary btn-lg px-4 py-3 fw-bold">Distribution Network <i class="bi bi-arrow-right ms-2"></i></a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -118,7 +211,7 @@
     </button>
 </div>
 
-<section class="py-5">
+<section class="py-5" style="background: #fff;">
     <div class="container">
         <div class="text-center mb-5">
             <h2 class="fw-bold">We are the first soft gelatin products producers in Nigeria with optimum production capacity of over 50 million capsules/month.</h2>
@@ -126,11 +219,11 @@
         
         <div class="row g-5 align-items-center">
             <div class="col-lg-6">
-                <img src="https://krishatpharma.com/images/home-img.jpg" alt="About Us" class="img-fluid rounded shadow">
+                <img src="https://krishatpharma.com/images/home-img.jpg" alt="About Us" class="img-fluid rounded shadow" style="max-width: 100%;">
             </div>
             <div class="col-lg-6">
                 <h1 class="fw-bold mb-4">WELCOME TO KRISHAT PHARMA INDUSTRIES LTD.</h1>
-                <h5 class="text-primary-custom mb-3">A Brand to reckon with in the Health & Pharmaceutical Industry.</h5>
+                <h5 class="text-corporate mb-3">A Brand to reckon with in the Health & Pharmaceutical Industry.</h5>
                 <p class="text-muted">Krishat Pharma Industries Ltd is a pharmaceutical drug manufacturing company in Ibadan, Oyo state and headquartered at Lagos state. From past 8 years, company has been developing and manufacturing pharmaceutical products in Nigeria and selling and distributing these in over 50 different locations in West-African region.</p>
                 <a href="{{ url_for('about') }}" class="btn btn-primary mt-3">MORE ABOUT US <i class="bi bi-arrow-right"></i></a>
             </div>
@@ -138,7 +231,41 @@
     </div>
 </section>
 
-<section class="py-5" style="background-color: #e4ebef;">
+<section class="py-5" style="background: #f8f9fa;">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="feature-card p-4 text-center">
+                    <div class="feature-icon">
+                        <i class="bi bi-shield-check"></i>
+                    </div>
+                    <h5 class="mt-3">NAFDAC Certified</h5>
+                    <p class="text-muted small mb-0">All our drugs are NAFDAC approved and manufactured in a fully c-GMP complaint facility.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card p-4 text-center">
+                    <div class="feature-icon">
+                        <i class="bi bi-capsule"></i>
+                    </div>
+                    <h5 class="mt-3">50M+ Capsules/Month</h5>
+                    <p class="text-muted small mb-0">First soft gelatin products producers in Nigeria with optimum production capacity.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card p-4 text-center">
+                    <div class="feature-icon">
+                        <i class="bi bi-globe"></i>
+                    </div>
+                    <h5 class="mt-3">West Africa Network</h5>
+                    <p class="text-muted small mb-0">Distribution across 50+ locations in West-African region.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5" style="background: #fff;">
     <div class="container">
         <div class="row g-5 align-items-center">
             <div class="col-lg-6">
@@ -148,12 +275,12 @@
                 <h2 class="fw-bold mb-4">We Are a Trusted Brand in the Pharmaceutical Sector</h2>
                 <div class="row g-4">
                     <div class="col-12">
-                        <h4 class="text-primary-custom"><i class="bi bi-shield-check me-2"></i>NAFDAC Certified Company</h4>
-                        <p class="text-muted">All our drugs are NAFDAC approved and are all manufactured in a fully c-GMP complaint facility. We ensure that each drug is committed to resolving the purpose for which it was made.</p>
+                        <h5 class="text-corporate"><i class="bi bi-check-circle-fill me-2"></i>NAFDAC Certified Company</h5>
+                        <p class="text-muted">All our drugs are NAFDAC approved and are all manufactured in a fully c-GMP complaint facility.</p>
                     </div>
                     <div class="col-12">
-                        <h4 class="text-primary-custom"><i class="bi bi-flask me-2"></i>Highly Qualified Laboratory</h4>
-                        <p class="text-muted">We have some of the best drug chemist and lab researchers in the industry working with us. And their one and simple goal, is to make drugs that actually cures.</p>
+                        <h5 class="text-corporate"><i class="bi bi-check-circle-fill me-2"></i>Highly Qualified Laboratory</h5>
+                        <p class="text-muted">We have some of the best drug chemist and lab researchers in the industry working with us.</p>
                     </div>
                 </div>
             </div>
@@ -161,122 +288,108 @@
     </div>
 </section>
 
-<section class="py-5">
+<section class="py-5 corporate-card text-center text-white">
     <div class="container">
-        <div class="row g-5">
-            <div class="col-lg-8">
-                <h3 class="fw-bold mb-4">NEWS & MEDIA</h3>
-                <div class="row g-4">
-                    <div class="col-md-6">
-                        <article class="card feature-box h-100">
-                            <div class="card-body">
-                                <h5><a href="#" class="text-decoration-none text-dark">The need for adequate and qualified drug laboratory is becoming a necessity.</a></h5>
-                                <p class="text-muted small">September 14, 2019</p>
-                            </div>
-                        </article>
-                    </div>
-                    <div class="col-md-6">
-                        <article class="card feature-box h-100">
-                            <div class="card-body">
-                                <h5><a href="#" class="text-decoration-none text-dark">Group recommends public health approach to tackle drug abuse</a></h5>
-                                <p class="text-muted small">August 10, 2019</p>
-                            </div>
-                        </article>
-                    </div>
+        <div class="row g-4">
+            <div class="col-md-3">
+                <div class="stats-item">
+                    <h2 class="text-white">50M+</h2>
+                    <p>CAPACITIES/MONTH</p>
                 </div>
             </div>
-            <div class="col-lg-4">
-                <div class="nafdac-badge text-center">
-                    <h3>NAFDAC Approved Pharmaceutical & Drug Company</h3>
-                    <p class="opacity-75">Trustworthy and Loyalty.<br>New Technologies.<br>Positive Results.</p>
-                    <a href="{{ url_for('about') }}" class="btn btn-light mt-2">LEARN MORE</a>
+            <div class="col-md-3">
+                <div class="stats-item">
+                    <h2 class="text-white">50+</h2>
+                    <p>DISTRIBUTION LOCATIONS</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-item">
+                    <h2 class="text-white">8+</h2>
+                    <p>YEARS EXPERIENCE</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-item">
+                    <h2 class="text-white">100%</h2>
+                    <p>NAFDAC APPROVED</p>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<section class="py-5" style="background-color: #e4ebef;">
+<section class="py-5" style="background: #f8f9fa;">
     <div class="container">
-        <h2 class="text-center fw-bold mb-5">Our Products</h2>
+        <div class="text-center mb-5">
+            <h2 class="fw-bold section-title pb-3">OUR PRODUCTS</h2>
+        </div>
         <div class="row g-4">
             {% if products %}
-            {% for product in products[:12] %}
+            {% for product in products[:8] %}
             <div class="col-md-3 col-sm-6">
-                <div class="card product-card h-100">
-                    {% if product.image %}
-                    <img src="{{ url_for('static', filename='uploads/' + product.image) }}" class="card-img-top" alt="{{ product.name }}">
-                    {% else %}
-                    <img src="https://krishatpharma.com/images/products/parakris-500.jpg" class="card-img-top" alt="{{ product.name }}">
-                    {% endif %}
+                <div class="product-card">
+                    <img src="https://krishatpharma.com/images/products/{{ product.image }}" class="card-img-top" alt="{{ product.name }}" onerror="this.src='https://krishatpharma.com/images/products/parakris-500.jpg'">
                     <div class="card-body text-center">
-                        <h6 class="card-title">{{ product.name }}</h5>
+                        <h6 class="card-title mb-1">{{ product.name }}</h6>
                     </div>
                 </div>
             </div>
             {% endfor %}
             {% else %}
             <div class="col-md-3 col-sm-6">
-                <div class="card product-card h-100">
+                <div class="product-card">
                     <img src="https://krishatpharma.com/images/products/4NhLDTv2Y-diclokris-un-50.jpg" class="card-img-top" alt="Diclokris 50">
                     <div class="card-body text-center">
-                        <h6 class="card-title">Diclokris 50 - UN</h6>
+                        <h6 class="card-title mb-1">Diclokris 50 - UN</h6>
                     </div>
                 </div>
             </div>
             <div class="col-md-3 col-sm-6">
-                <div class="card product-card h-100">
+                <div class="product-card">
                     <img src="https://krishatpharma.com/images/products/PybQ2E9fL-relief-gel.jpg" class="card-img-top" alt="Krishat Relief Gel">
                     <div class="card-body text-center">
-                        <h6 class="card-title">Krishat Relief Gel</h6>
+                        <h6 class="card-title mb-1">Krishat Relief Gel</h6>
                     </div>
                 </div>
             </div>
             <div class="col-md-3 col-sm-6">
-                <div class="card product-card h-100">
+                <div class="product-card">
                     <img src="https://krishatpharma.com/images/products/pusq1X4Ty-becloderm-g.jpg" class="card-img-top" alt="Becloderm-G Cream">
                     <div class="card-body text-center">
-                        <h6 class="card-title">Becloderm-G Cream</h6>
+                        <h6 class="card-title mb-1">Becloderm-G Cream</h6>
                     </div>
                 </div>
             </div>
             <div class="col-md-3 col-sm-6">
-                <div class="card product-card h-100">
+                <div class="product-card">
                     <img src="https://krishatpharma.com/images/products/parakris-500.jpg" class="card-img-top" alt="Parakris 500">
                     <div class="card-body text-center">
-                        <h6 class="card-title">Parakris 500 - Green</h6>
+                        <h6 class="card-title mb-1">Parakris 500 - Green</h6>
                     </div>
                 </div>
             </div>
             <div class="col-md-3 col-sm-6">
-                <div class="card product-card h-100">
+                <div class="product-card">
                     <img src="https://krishatpharma.com/images/products/hydrokris.jpg" class="card-img-top" alt="Hydrokris Injection">
                     <div class="card-body text-center">
-                        <h6 class="card-title">Hydrokris Injection</h6>
+                        <h6 class="card-title mb-1">Hydrokris Injection</h6>
                     </div>
                 </div>
             </div>
             <div class="col-md-3 col-sm-6">
-                <div class="card product-card h-100">
+                <div class="product-card">
                     <img src="https://krishatpharma.com/images/products/VHfsFpZwM-gentakris-80.jpg" class="card-img-top" alt="Gentakris-80">
                     <div class="card-body text-center">
-                        <h6 class="card-title">Gentakris-80 Injection</h6>
+                        <h6 class="card-title mb-1">Gentakris-80 Injection</h6>
                     </div>
                 </div>
             </div>
             <div class="col-md-3 col-sm-6">
-                <div class="card product-card h-100">
+                <div class="product-card">
                     <img src="https://krishatpharma.com/images/products/ASKspe9t1-vitakris.jpg" class="card-img-top" alt="Vitakris">
                     <div class="card-body text-center">
-                        <h6 class="card-title">Vitakris</h6>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 col-sm-6">
-                <div class="card product-card h-100">
-                    <img src="https://krishatpharma.com/images/products/ChvZutjXE-combikris-extra.jpg" class="card-img-top" alt="Combikris Extra">
-                    <div class="card-body text-center">
-                        <h6 class="card-title">Combikris Extra</h6>
+                        <h6 class="card-title mb-1">Vitakris</h6>
                     </div>
                 </div>
             </div>

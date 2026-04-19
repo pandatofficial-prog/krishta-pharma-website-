@@ -5,138 +5,129 @@
 {% block extra_css %}
 <style>
     .product-card {
-        border: none;
-        border-radius: 15px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
         overflow: hidden;
         transition: all 0.3s;
+        background: var(--white);
     }
     .product-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
     }
     .product-card img {
-        height: 200px;
-        object-fit: cover;
+        height: 180px;
+        object-fit: contain;
+        padding: 20px;
+        background: #f8f9fa;
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<section class="py-5">
+<section class="py-5" style="background: #fff;">
     <div class="container">
-        <h1 class="text-center fw-bold mb-5">Our Products</h1>
+        <h1 class="text-center fw-bold mb-2">Our Products</h1>
+        <p class="text-center text-muted mb-5">Quality pharmaceutical products manufactured in Nigeria</p>
         
         <div class="row g-4">
             {% if products %}
             {% for product in products %}
-            <div class="col-md-4 col-sm-6">
-                <div class="card product-card h-100">
-                    {% if product.image %}
-                    <img src="{{ url_for('static', filename='uploads/' + product.image) }}" class="card-img-top" alt="{{ product.name }}">
-                    {% else %}
-                    <img src="https://krishatpharma.com/images/products/parakris-500.jpg" class="card-img-top" alt="{{ product.name }}">
-                    {% endif %}
+            <div class="col-md-3 col-sm-6">
+                <div class="product-card h-100">
+                    <img src="https://krishatpharma.com/images/products/{{ product.image }}" class="card-img-top" alt="{{ product.name }}" onerror="this.src='https://krishatpharma.com/images/products/parakris-500.jpg'">
                     <div class="card-body text-center">
-                        <h5 class="card-title">{{ product.name }}</h5>
-                        <p class="text-muted small">{{ product.description }}</p>
+                        <h6 class="card-title">{{ product.name }}</h6>
+                        <p class="text-muted small mb-0">{{ product.description[:60] }}...</p>
                     </div>
                 </div>
             </div>
             {% endfor %}
             {% else %}
             <div class="col-md-3 col-sm-6">
-                <div class="card product-card h-100">
+                <div class="product-card h-100">
                     <img src="https://krishatpharma.com/images/products/4NhLDTv2Y-diclokris-un-50.jpg" class="card-img-top" alt="Diclokris 50">
                     <div class="card-body text-center">
-                        <h5 class="card-title">Diclokris 50 - UN</h5>
+                        <h6 class="card-title">Diclokris 50 - UN</h6>
                     </div>
                 </div>
             </div>
             <div class="col-md-3 col-sm-6">
-                <div class="card product-card h-100">
+                <div class="product-card h-100">
                     <img src="https://krishatpharma.com/images/products/PybQ2E9fL-relief-gel.jpg" class="card-img-top" alt="Krishat Relief Gel">
                     <div class="card-body text-center">
-                        <h5 class="card-title">Krishat Relief Gel</h5>
+                        <h6 class="card-title">Krishat Relief Gel</h6>
                     </div>
                 </div>
             </div>
             <div class="col-md-3 col-sm-6">
-                <div class="card product-card h-100">
+                <div class="product-card h-100">
                     <img src="https://krishatpharma.com/images/products/pusq1X4Ty-becloderm-g.jpg" class="card-img-top" alt="Becloderm-G Cream">
                     <div class="card-body text-center">
-                        <h5 class="card-title">Becloderm-G Cream</h5>
+                        <h6 class="card-title">Becloderm-G Cream</h6>
                     </div>
                 </div>
             </div>
             <div class="col-md-3 col-sm-6">
-                <div class="card product-card h-100">
+                <div class="product-card h-100">
                     <img src="https://krishatpharma.com/images/products/parakris-500.jpg" class="card-img-top" alt="Parakris 500">
                     <div class="card-body text-center">
-                        <h5 class="card-title">Parakris 500 - Green</h5>
+                        <h6 class="card-title">Parakris 500 - Green</h6>
                     </div>
                 </div>
             </div>
             <div class="col-md-3 col-sm-6">
-                <div class="card product-card h-100">
+                <div class="product-card h-100">
                     <img src="https://krishatpharma.com/images/products/hydrokris.jpg" class="card-img-top" alt="Hydrokris Injection">
                     <div class="card-body text-center">
-                        <h5 class="card-title">Hydrokris Injection</h5>
+                        <h6 class="card-title">Hydrokris Injection</h6>
                     </div>
                 </div>
             </div>
             <div class="col-md-3 col-sm-6">
-                <div class="card product-card h-100">
+                <div class="product-card h-100">
                     <img src="https://krishatpharma.com/images/products/VHfsFpZwM-gentakris-80.jpg" class="card-img-top" alt="Gentakris-80">
                     <div class="card-body text-center">
-                        <h5 class="card-title">Gentakris-80 Injection</h5>
+                        <h6 class="card-title">Gentakris-80 Injection</h6>
                     </div>
                 </div>
             </div>
             <div class="col-md-3 col-sm-6">
-                <div class="card product-card h-100">
+                <div class="product-card h-100">
                     <img src="https://krishatpharma.com/images/products/ASKspe9t1-vitakris.jpg" class="card-img-top" alt="Vitakris">
                     <div class="card-body text-center">
-                        <h5 class="card-title">Vitakris</h5>
+                        <h6 class="card-title">Vitakris</h6>
                     </div>
                 </div>
             </div>
             <div class="col-md-3 col-sm-6">
-                <div class="card product-card h-100">
+                <div class="product-card h-100">
                     <img src="https://krishatpharma.com/images/products/ChvZutjXE-combikris-extra.jpg" class="card-img-top" alt="Combikris Extra">
                     <div class="card-body text-center">
-                        <h5 class="card-title">Combikris Extra</h5>
+                        <h6 class="card-title">Combikris Extra</h6>
                     </div>
                 </div>
             </div>
             <div class="col-md-3 col-sm-6">
-                <div class="card product-card h-100">
+                <div class="product-card h-100">
                     <img src="https://krishatpharma.com/images/products/kpi.jpg" class="card-img-top" alt="KPI">
                     <div class="card-body text-center">
-                        <h5 class="card-title">KPI</h5>
+                        <h6 class="card-title">KPI</h6>
                     </div>
                 </div>
             </div>
             <div class="col-md-3 col-sm-6">
-                <div class="card product-card h-100">
+                <div class="product-card h-100">
                     <img src="https://krishatpharma.com/images/products/mepPkCdtw-kristen.jpg" class="card-img-top" alt="Kristen">
                     <div class="card-body text-center">
-                        <h5 class="card-title">Kristen</h5>
+                        <h6 class="card-title">Kristen</h6>
                     </div>
                 </div>
             </div>
             <div class="col-md-3 col-sm-6">
-                <div class="card product-card h-100">
+                <div class="product-card h-100">
                     <img src="https://krishatpharma.com/images/products/ject.jpg" class="card-img-top" alt="Krishat Jects">
                     <div class="card-body text-center">
-                        <h5 class="card-title">Krishat Jects</h5>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 col-sm-6">
-                <div class="card product-card h-100">
-                    <img src="https://krishatpharma.com/images/products/yPzKobH3j-doxycycline.jpg" class="card-img-top" alt="Doxycycline">
-                    <div class="card-body text-center">
-                        <h5 class="card-title">Krishat Doxycycline</h5>
+                        <h6 class="card-title">Krishat Jects</h6>
                     </div>
                 </div>
             </div>

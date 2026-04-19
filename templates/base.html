@@ -6,45 +6,91 @@
     <title>{% block title %}Krishat Pharma Industries Ltd{% endblock %}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <style>
         :root {
-            --primary: #990b6e;
-            --primary-dark: #8c0038;
-            --secondary: #2c3e50;
+            --primary: #0056b3;
+            --primary-dark: #003d80;
+            --primary-light: #007bff;
+            --secondary: #495057;
+            --accent: #28a745;
+            --light: #f8f9fa;
+            --white: #ffffff;
+            --dark: #212529;
+            --gray: #6c757d;
+            --border: #dee2e6;
         }
         body {
-            font-family: 'Lato', sans-serif;
+            font-family: 'Open Sans', sans-serif;
+            color: var(--secondary);
+            background: var(--light);
         }
-        h1, h2, h3, h4, h5, h6, .navbar-brand, .btn {
-            font-family: 'Poppins', sans-serif;
+        h1, h2, h3, h4, h5, h6, .navbar-brand {
+            font-family: 'Roboto', sans-serif;
+            font-weight: 600;
         }
         .navbar {
-            padding: 15px 0;
-            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            padding: 12px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            background: var(--white) !important;
         }
-        .navbar-expand-lg .navbar-nav .nav-link {
-            padding: 10px 18px;
+        .navbar-light .navbar-nav .nav-link {
+            padding: 10px 20px;
             font-weight: 500;
             font-size: 14px;
+            color: var(--secondary) !important;
+            transition: all 0.3s;
+        }
+        .navbar-light .navbar-nav .nav-link:hover {
+            color: var(--primary) !important;
         }
         .top-bar {
-            background: var(--primary);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
             color: white;
-            padding: 8px 0;
+            padding: 10px 0;
             font-size: 13px;
         }
         .btn-primary {
             background-color: var(--primary);
             border-color: var(--primary);
+            padding: 10px 25px;
+            font-weight: 500;
         }
         .btn-primary:hover {
             background-color: var(--primary-dark);
             border-color: var(--primary-dark);
         }
-        .text-primary-custom {
+        .text-corporate {
             color: var(--primary) !important;
+        }
+        .contact-info-box {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 25px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .contact-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+        .contact-item i {
+            color: #28a745;
+            font-size: 1.1rem;
+            margin-right: 12px;
+            margin-top: 3px;
+        }
+        .contact-item strong {
+            color: white;
+            display: block;
+            font-size: 13px;
+        }
+        .contact-item p {
+            color: rgba(255,255,255,0.85);
+            margin-bottom: 0;
+            font-size: 14px;
+            line-height: 1.4;
         }
     </style>
     {% block extra_css %}{% endblock %}
@@ -53,12 +99,10 @@
     <div class="top-bar">
         <div class="container">
             <div class="d-flex justify-content-between align-items-center">
-                <div><i class="bi bi-heart-pulse"></i> Preservation of Life is the reason we are in Business!</div>
+                <div><i class="bi bi-heart-pulse me-2"></i>Preservation of Life is the reason we are in Business!</div>
                 <div class="d-flex gap-3">
-                    <a href="#" class="text-white"><i class="bi bi-facebook"></i></a>
-                    <a href="#" class="text-white"><i class="bi bi-twitter-x"></i></a>
-                    <a href="#" class="text-white"><i class="bi bi-linkedin"></i></a>
-                    <a href="#" class="text-white"><i class="bi bi-instagram"></i></a>
+                    <span><i class="bi bi-telephone me-1"></i>+(234)-813-855-0050</span>
+                    <span><i class="bi bi-envelope me-1"></i>info@krishatpharma.com</span>
                 </div>
             </div>
         </div>
@@ -67,7 +111,7 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top">
         <div class="container">
             <a class="navbar-brand" href="{{ url_for('index') }}">
-                <img src="https://krishatpharma.com/images/logo.png" alt="Krishat Pharma" height="60">
+                <img src="https://krishatpharma.com/images/logo.png" alt="Krishat Pharma" height="55">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
@@ -103,7 +147,7 @@
                     <li class="nav-item"><a class="nav-link" href="{{ url_for('dashboard') }}">Dashboard</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ url_for('logout') }}">Logout</a></li>
                     {% else %}
-                    <li class="nav-item"><a class="nav-link" href="{{ url_for('login') }}"><i class="bi bi-person"></i></a></li>
+                    <li class="nav-item"><a class="nav-link btn btn-primary btn-sm text-white ms-2" href="{{ url_for('login') }}"><i class="bi bi-person"></i> Login</a></li>
                     {% endif %}
                 </ul>
             </div>
@@ -128,14 +172,40 @@
     <footer class="footer-section">
         <div class="container">
             <div class="row g-4">
-                <div class="col-lg-3">
-                    <img src="https://krishatpharma.com/images/logo-white.png" alt="Krishat Pharma" height="60" class="mb-3">
+                <div class="col-lg-4">
+                    <img src="https://krishatpharma.com/images/logo-white.png" alt="Krishat Pharma" height="55" class="mb-3">
                     <p class="text-white-50">Krishat Pharma Industries Ltd is a pharmaceutical drug manufacturing company based in Ibadan, Oyo State and head-quarters in Lagos.</p>
-                    <div class="d-flex gap-2">
+                    <div class="d-flex gap-2 mt-3">
                         <a href="#" class="social-icon"><i class="bi bi-facebook"></i></a>
                         <a href="#" class="social-icon"><i class="bi bi-twitter-x"></i></a>
                         <a href="#" class="social-icon"><i class="bi bi-linkedin"></i></a>
                         <a href="#" class="social-icon"><i class="bi bi-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="contact-info-box">
+                        <h5 class="text-white mb-3"><i class="bi bi-telephone-fill me-2"></i>Contact Us</h5>
+                        <div class="contact-item">
+                            <i class="bi bi-geo-alt-fill"></i>
+                            <div>
+                                <strong>Address</strong>
+                                <p>No.24, Adeola Adeleye Street, Off Coker Road, Ilupeju, Lagos Nigeria</p>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <i class="bi bi-envelope-fill"></i>
+                            <div>
+                                <strong>Email</strong>
+                                <p>info@krishatpharma.com</p>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <i class="bi bi-telephone-fill"></i>
+                            <div>
+                                <strong>Phone</strong>
+                                <p>+(234)-813-855-0050</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="col-lg-2">
@@ -158,15 +228,7 @@
                         <li><a href="#">Terms of Use</a></li>
                     </ul>
                 </div>
-                <div class="col-lg-5">
-                    <h5 class="text-white mb-3">Let's Talk</h5>
-                    <ul class="list-unstyled footer-links">
-                        <li><i class="bi bi-geo-alt text-white-50 me-2"></i>No.24, Adeola Adeleye Street, Off Coker Road, Ilupeju, Lagos Nigeria</li>
-                        <li><i class="bi bi-envelope text-white-50 me-2"></i>info@krishatpharma.com</li>
-                        <li><i class="bi bi-telephone text-white-50 me-2"></i>+(234)-813-855-0050</li>
-                    </ul>
                 </div>
-            </div>
             <hr class="border-secondary">
             <p class="text-center text-white-50 mb-0">&copy; Copyright 2026 Krishat Pharma Industries Ltd. All Right Reserved.</p>
         </div>

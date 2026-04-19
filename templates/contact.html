@@ -3,45 +3,55 @@
 {% block title %}Contact Us - Krishat Pharma Industries Ltd{% endblock %}
 
 {% block content %}
-<section class="py-5">
+<section class="py-5" style="background: #fff;">
     <div class="container">
-        <h1 class="text-center fw-bold mb-5">Contact Us</h1>
+        <h1 class="text-center fw-bold mb-2">Contact Us</h1>
+        <p class="text-center text-muted mb-5">Get in touch with us for any inquiries</p>
         
         <div class="row g-4">
             <div class="col-lg-5">
-                <div class="card border-0 shadow-sm">
+                <div class="card border-0 shadow-sm h-100">
                     <div class="card-body p-4">
-                        <h4 class="mb-4">Let's Talk</h4>
-                        <div class="mb-4">
-                            <div class="d-flex align-items-center mb-3">
-                                <div class="contact-icon me-3"><i class="bi bi-geo-alt"></i></div>
-                                <div>
-                                    <strong>Address</strong>
-                                    <p class="mb-0 text-muted">No.24, Adeola Adeleye Street, Off Coker Road, Ilupeju, Lagos Nigeria</p>
-                                </div>
-                            </div>
-                            <div class="d-flex align-items-center mb-3">
-                                <div class="contact-icon me-3"><i class="bi bi-envelope"></i></div>
-                                <div>
-                                    <strong>Email</strong>
-                                    <p class="mb-0 text-muted">info@krishatpharma.com</p>
-                                </div>
-                            </div>
-                            <div class="d-flex align-items-center">
-                                <div class="contact-icon me-3"><i class="bi bi-telephone"></i></div>
-                                <div>
-                                    <strong>Phone</strong>
-                                    <p class="mb-0 text-muted">+(234)-813-855-0050</p>
-                                </div>
+                        <h4 class="mb-4">Contact Information</h4>
+                        
+                        <div class="d-flex mb-4">
+                            <div class="contact-icon"><i class="bi bi-geo-alt"></i></div>
+                            <div class="ms-3">
+                                <h6 class="mb-1">Address</h6>
+                                <p class="text-muted mb-0">No.24, Adeola Adeleye Street,<br>Off Coker Road, Ilupeju, Lagos Nigeria</p>
                             </div>
                         </div>
                         
-                        <h4 class="mb-3">Follow Us</h4>
+                        <div class="d-flex mb-4">
+                            <div class="contact-icon"><i class="bi bi-envelope"></i></div>
+                            <div class="ms-3">
+                                <h6 class="mb-1">Email</h6>
+                                <p class="text-muted mb-0">info@krishatpharma.com</p>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex mb-4">
+                            <div class="contact-icon"><i class="bi bi-telephone"></i></div>
+                            <div class="ms-3">
+                                <h6 class="mb-1">Phone</h6>
+                                <p class="text-muted mb-0">+(234)-813-855-0050</p>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex mb-4">
+                            <div class="contact-icon"><i class="bi bi-clock"></i></div>
+                            <div class="ms-3">
+                                <h6 class="mb-1">Business Hours</h6>
+                                <p class="text-muted mb-0">Mon - Fri: 8:00 AM - 5:00 PM</p>
+                            </div>
+                        </div>
+                        
+                        <h5 class="mt-4 mb-3">Follow Us</h5>
                         <div class="d-flex gap-2">
-                            <a href="#" class="btn btn-primary"><i class="bi bi-facebook"></i></a>
-                            <a href="#" class="btn btn-primary"><i class="bi bi-twitter-x"></i></a>
-                            <a href="#" class="btn btn-primary"><i class="bi bi-linkedin"></i></a>
-                            <a href="#" class="btn btn-primary"><i class="bi bi-instagram"></i></a>
+                            <a href="#" class="btn btn-primary btn-sm"><i class="bi bi-facebook"></i></a>
+                            <a href="#" class="btn btn-primary btn-sm"><i class="bi bi-twitter-x"></i></a>
+                            <a href="#" class="btn btn-primary btn-sm"><i class="bi bi-linkedin"></i></a>
+                            <a href="#" class="btn btn-primary btn-sm"><i class="bi bi-instagram"></i></a>
                         </div>
                     </div>
                 </div>
@@ -54,11 +64,11 @@
                         <form method="POST" action="{{ url_for('contact') }}">
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label">Your Name</label>
+                                    <label class="form-label">Your Name *</label>
                                     <input type="text" class="form-control" name="name" required>
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label">Email Address</label>
+                                    <label class="form-label">Email Address *</label>
                                     <input type="email" class="form-control" name="email" required>
                                 </div>
                             </div>
@@ -71,7 +81,7 @@
                                 <input type="text" class="form-control" name="subject">
                             </div>
                             <div class="mb-3">
-                                <label class="form-label">Message</label>
+                                <label class="form-label">Message *</label>
                                 <textarea class="form-control" name="message" rows="5" required></textarea>
                             </div>
                             <button type="submit" class="btn btn-primary">Send Message</button>
@@ -90,14 +100,15 @@
 
 <style>
 .contact-icon {
-    width: 45px;
-    height: 45px;
-    background: #990b6e;
+    width: 50px;
+    height: 50px;
+    background: var(--primary);
     color: white;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
     font-size: 1.2rem;
 }
 </style>
