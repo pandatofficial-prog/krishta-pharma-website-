@@ -55,7 +55,6 @@ def init_db():
                       price REAL NOT NULL,
                       description TEXT,
                       image TEXT)''')
-        conn.commit()
         c.execute("SELECT COUNT(*) as count FROM admins")
         row = c.fetchone()
         count = row['count']
@@ -63,6 +62,7 @@ def init_db():
             hashed_pw = generate_password_hash('admin123')
             c.execute("INSERT INTO admins (username, password) VALUES (%s, %s)", ('admin', hashed_pw))
             c.execute("INSERT INTO admins (username, password) VALUES (%s, %s)", ('manager', generate_password_hash('manager123')))
+        conn.commit()
         conn.close()
     else:
         conn = get_db_connection()
