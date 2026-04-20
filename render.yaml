@@ -16,5 +16,4 @@ services:
 
 databases:
   - name: krishta-pharma-db
-    provider: postgres
     plan: free
