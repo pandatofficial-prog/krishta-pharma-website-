@@ -3,9 +3,11 @@ from flask import Flask, render_template, request, redirect, url_for, session, f
 from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash, check_password_hash
 import sqlite3
+import psycopg2
+import psycopg2.extras
 
 app = Flask(__name__)
-app.secret_key = 'krishat_pharma_secret_key_2024'
+app.secret_key = os.environ.get('SECRET_KEY', 'krishat_pharma_secret_key_2024')
 
 UPLOAD_FOLDER = os.path.join('static', 'uploads')
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
@@ -14,37 +16,62 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
 
-DATABASE = 'pharma.db'
+DATABASE_URL = os.environ.get('DATABASE_URL')
+USE_POSTGRES = DATABASE_URL is not None
 
-def init_db():
-    conn = sqlite3.connect(DATABASE)
-    c = conn.cursor()
-    
-    c.execute('''CREATE TABLE IF NOT EXISTS admins
-                 (id INTEGER PRIMARY KEY AUTOINCREMENT,
-                  username TEXT UNIQUE NOT NULL,
-                  password TEXT NOT NULL)''')
-    
-    c.execute('''CREATE TABLE IF NOT EXISTS products
-                 (id INTEGER PRIMARY KEY AUTOINCREMENT,
-                  name TEXT NOT NULL,
-                  price REAL NOT NULL,
-                  description TEXT,
-                  image TEXT)''')
-    
-    c.execute("SELECT COUNT(*) FROM admins")
-    if c.fetchone()[0] == 0:
-        hashed_pw = generate_password_hash('admin123')
-        c.execute("INSERT INTO admins (username, password) VALUES (?, ?)", ('admin', hashed_pw))
-        c.execute("INSERT INTO admins (username, password) VALUES (?, ?)", ('manager', generate_password_hash('manager123')))
-    
-    conn.commit()
-    conn.close()
+if not USE_POSTGRES:
+    DATABASE = 'pharma.db'
 
 def get_db_connection():
-    conn = sqlite3.connect(DATABASE)
-    conn.row_factory = sqlite3.Row
-    return conn
+    if USE_POSTGRES:
+        conn = psycopg2.connect(DATABASE_URL, cursor_factory=psycopg2.extras.DictCursor)
+        return conn
+    else:
+        conn = sqlite3.connect(DATABASE)
+        conn.row_factory = sqlite3.Row
+        return conn
+
+def init_db():
+    if USE_POSTGRES:
+        conn = get_db_connection()
+        c = conn.cursor()
+        c.execute('''CREATE TABLE IF NOT EXISTS admins
+                     (id SERIAL PRIMARY KEY,
+                      username VARCHAR(255) UNIQUE NOT NULL,
+                      password TEXT NOT NULL)''')
+        c.execute('''CREATE TABLE IF NOT EXISTS products
+                     (id SERIAL PRIMARY KEY,
+                      name TEXT NOT NULL,
+                      price REAL NOT NULL,
+                      description TEXT,
+                      image TEXT)''')
+        c.execute("SELECT COUNT(*) FROM admins")
+        if c.fetchone()[0] == 0:
+            hashed_pw = generate_password_hash('admin123')
+            c.execute("INSERT INTO admins (username, password) VALUES (%s, %s)", ('admin', hashed_pw))
+            c.execute("INSERT INTO admins (username, password) VALUES (%s, %s)", ('manager', generate_password_hash('manager123')))
+        conn.commit()
+        conn.close()
+    else:
+        conn = get_db_connection()
+        c = conn.cursor()
+        c.execute('''CREATE TABLE IF NOT EXISTS admins
+                     (id INTEGER PRIMARY KEY AUTOINCREMENT,
+                      username TEXT UNIQUE NOT NULL,
+                      password TEXT NOT NULL)''')
+        c.execute('''CREATE TABLE IF NOT EXISTS products
+                     (id INTEGER PRIMARY KEY AUTOINCREMENT,
+                      name TEXT NOT NULL,
+                      price REAL NOT NULL,
+                      description TEXT,
+                      image TEXT)''')
+        c.execute("SELECT COUNT(*) FROM admins")
+        if c.fetchone()[0] == 0:
+            hashed_pw = generate_password_hash('admin123')
+            c.execute("INSERT INTO admins (username, password) VALUES (?, ?)", ('admin', hashed_pw))
+            c.execute("INSERT INTO admins (username, password) VALUES (?, ?)", ('manager', generate_password_hash('manager123')))
+        conn.commit()
+        conn.close()
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -91,7 +118,7 @@ def blog():
 def press():
     return render_template('press.html')
 
-@app.route('/contacts')
+@app.route('/contacts', methods=['GET', 'POST'])
 def contact():
     if request.method == 'POST':
         name = request.form['name']
@@ -101,7 +128,7 @@ def contact():
         return redirect(url_for('contact'))
     return render_template('contact.html')
 
-@app.route('/contact')
+@app.route('/contact', methods=['GET', 'POST'])
 def contact_alt():
     if request.method == 'POST':
         name = request.form['name']
@@ -121,7 +148,10 @@ def login():
         password = request.form['password']
         
         conn = get_db_connection()
-        admin = conn.execute('SELECT * FROM admins WHERE username = ?', (username,)).fetchone()
+        if USE_POSTGRES:
+            admin = conn.execute('SELECT * FROM admins WHERE username = %s', (username,)).fetchone()
+        else:
+            admin = conn.execute('SELECT * FROM admins WHERE username = ?', (username,)).fetchone()
         conn.close()
         
         if admin and check_password_hash(admin['password'], password):
@@ -169,8 +199,12 @@ def add_product():
             image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
         
         conn = get_db_connection()
-        conn.execute('INSERT INTO products (name, price, description, image) VALUES (?, ?, ?, ?)',
-                     (name, price, description, filename))
+        if USE_POSTGRES:
+            conn.execute('INSERT INTO products (name, price, description, image) VALUES (%s, %s, %s, %s)',
+                         (name, price, description, filename))
+        else:
+            conn.execute('INSERT INTO products (name, price, description, image) VALUES (?, ?, ?, ?)',
+                         (name, price, description, filename))
         conn.commit()
         conn.close()
         
@@ -186,7 +220,10 @@ def edit_product(id):
         return redirect(url_for('login'))
     
     conn = get_db_connection()
-    product = conn.execute('SELECT * FROM products WHERE id = ?', (id,)).fetchone()
+    if USE_POSTGRES:
+        product = conn.execute('SELECT * FROM products WHERE id = %s', (id,)).fetchone()
+    else:
+        product = conn.execute('SELECT * FROM products WHERE id = ?', (id,)).fetchone()
     
     if request.method == 'POST':
         name = request.form['name']
@@ -199,8 +236,12 @@ def edit_product(id):
             filename = secure_filename(image.filename)
             image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
         
-        conn.execute('UPDATE products SET name = ?, price = ?, description = ?, image = ? WHERE id = ?',
-                     (name, price, description, filename, id))
+        if USE_POSTGRES:
+            conn.execute('UPDATE products SET name = %s, price = %s, description = %s, image = %s WHERE id = %s',
+                         (name, price, description, filename, id))
+        else:
+            conn.execute('UPDATE products SET name = ?, price = ?, description = ?, image = ? WHERE id = ?',
+                         (name, price, description, filename, id))
         conn.commit()
         conn.close()
         
@@ -217,14 +258,20 @@ def delete_product(id):
         return redirect(url_for('login'))
     
     conn = get_db_connection()
-    product = conn.execute('SELECT * FROM products WHERE id = ?', (id,)).fetchone()
+    if USE_POSTGRES:
+        product = conn.execute('SELECT * FROM products WHERE id = %s', (id,)).fetchone()
+    else:
+        product = conn.execute('SELECT * FROM products WHERE id = ?', (id,)).fetchone()
     
     if product and product['image']:
         image_path = os.path.join(app.config['UPLOAD_FOLDER'], product['image'])
         if os.path.exists(image_path):
             os.remove(image_path)
     
-    conn.execute('DELETE FROM products WHERE id = ?', (id,))
+    if USE_POSTGRES:
+        conn.execute('DELETE FROM products WHERE id = %s', (id,))
+    else:
+        conn.execute('DELETE FROM products WHERE id = ?', (id,))
     conn.commit()
     conn.close()
     

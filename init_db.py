@@ -5,39 +5,72 @@ Run this script to initialize the database with default admin users and sample p
 
 import os
 import sqlite3
+import psycopg2
 from werkzeug.security import generate_password_hash
 
-DATABASE = 'pharma.db'
+DATABASE_URL = os.environ.get('DATABASE_URL')
+USE_POSTGRES = DATABASE_URL is not None
+
+if not USE_POSTGRES:
+    DATABASE = 'pharma.db'
+
+def get_db_connection():
+    if USE_POSTGRES:
+        conn = psycopg2.connect(DATABASE_URL)
+        return conn
+    else:
+        conn = sqlite3.connect(DATABASE)
+        return conn
 
 def init_database():
     """Initialize the database with tables and default admin users."""
     
-    conn = sqlite3.connect(DATABASE)
+    conn = get_db_connection()
     c = conn.cursor()
     
-    c.execute('''CREATE TABLE IF NOT EXISTS admins
-                 (id INTEGER PRIMARY KEY AUTOINCREMENT,
-                  username TEXT UNIQUE NOT NULL,
-                  password TEXT NOT NULL)''')
+    if USE_POSTGRES:
+        c.execute('''CREATE TABLE IF NOT EXISTS admins
+                     (id SERIAL PRIMARY KEY,
+                      username VARCHAR(255) UNIQUE NOT NULL,
+                      password TEXT NOT NULL)''')
+        c.execute('''CREATE TABLE IF NOT EXISTS products
+                     (id SERIAL PRIMARY KEY,
+                      name TEXT NOT NULL,
+                      price REAL NOT NULL,
+                      description TEXT,
+                      image TEXT)''')
+    else:
+        c.execute('''CREATE TABLE IF NOT EXISTS admins
+                     (id INTEGER PRIMARY KEY AUTOINCREMENT,
+                      username TEXT UNIQUE NOT NULL,
+                      password TEXT NOT NULL)''')
+        c.execute('''CREATE TABLE IF NOT EXISTS products
+                     (id INTEGER PRIMARY KEY AUTOINCREMENT,
+                      name TEXT NOT NULL,
+                      price REAL NOT NULL,
+                      description TEXT,
+                      image TEXT)''')
     
-    c.execute('''CREATE TABLE IF NOT EXISTS products
-                 (id INTEGER PRIMARY KEY AUTOINCREMENT,
-                  name TEXT NOT NULL,
-                  price REAL NOT NULL,
-                  description TEXT,
-                  image TEXT)''')
-    
-    c.execute("SELECT COUNT(*) FROM admins")
+    if USE_POSTGRES:
+        c.execute("SELECT COUNT(*) FROM admins")
+    else:
+        c.execute("SELECT COUNT(*) FROM admins")
     count = c.fetchone()[0]
     
     if count == 0:
         admin_password = generate_password_hash('admin123')
         manager_password = generate_password_hash('manager123')
         
-        c.execute("INSERT INTO admins (username, password) VALUES (?, ?)", 
-                  ('admin', admin_password))
-        c.execute("INSERT INTO admins (username, password) VALUES (?, ?)", 
-                  ('manager', manager_password))
+        if USE_POSTGRES:
+            c.execute("INSERT INTO admins (username, password) VALUES (%s, %s)", 
+                      ('admin', admin_password))
+            c.execute("INSERT INTO admins (username, password) VALUES (%s, %s)", 
+                      ('manager', manager_password))
+        else:
+            c.execute("INSERT INTO admins (username, password) VALUES (?, ?)", 
+                      ('admin', admin_password))
+            c.execute("INSERT INTO admins (username, password) VALUES (?, ?)", 
+                      ('manager', manager_password))
         
         print("Default admin users created:")
         print("  Admin: admin / admin123")
@@ -67,13 +100,17 @@ def add_sample_products():
         ('Krishat Doxycycline Capsules', 2200.00, 'Antibiotic capsules for infections', 'yPzKobH3j-doxycycline.jpg'),
     ]
     
-    conn = sqlite3.connect(DATABASE)
+    conn = get_db_connection()
     c = conn.cursor()
     
     c.execute("SELECT COUNT(*) FROM products")
     if c.fetchone()[0] == 0:
-        c.executemany('INSERT INTO products (name, price, description, image) VALUES (?, ?, ?, ?)', 
-                      sample_products)
+        if USE_POSTGRES:
+            c.executemany('INSERT INTO products (name, price, description, image) VALUES (%s, %s, %s, %s)', 
+                          sample_products)
+        else:
+            c.executemany('INSERT INTO products (name, price, description, image) VALUES (?, ?, ?, ?)', 
+                          sample_products)
         print(f"Added {len(sample_products)} sample products.")
     else:
         print("Products already exist in database.")
