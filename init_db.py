@@ -51,10 +51,7 @@ def init_database():
                       description TEXT,
                       image TEXT)''')
     
-    if USE_POSTGRES:
-        c.execute("SELECT COUNT(*) FROM admins")
-    else:
-        c.execute("SELECT COUNT(*) FROM admins")
+    c.execute("SELECT COUNT(*) FROM admins")
     count = c.fetchone()[0]
     
     if count == 0:
