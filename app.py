@@ -5,8 +5,8 @@ from flask import Flask, render_template, request, redirect, url_for, session, f
 from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash, check_password_hash
 import sqlite3
-import psycopg2
-import psycopg2.extras
+import psycopg
+from psycopg.rows import dict_row
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -29,7 +29,7 @@ if not USE_POSTGRES:
 
 def get_db_connection():
     if USE_POSTGRES:
-        return psycopg2.connect(DATABASE_URL, cursor_factory=psycopg2.extras.DictCursor)
+        return psycopg.connect(DATABASE_URL, row_factory=dict_row)
     else:
         conn = sqlite3.connect(DATABASE)
         conn.row_factory = sqlite3.Row
@@ -49,12 +49,12 @@ def init_db():
                       price REAL NOT NULL,
                       description TEXT,
                       image TEXT)''')
+        conn.commit()
         c.execute("SELECT COUNT(*) FROM admins")
         if c.fetchone()[0] == 0:
             hashed_pw = generate_password_hash('admin123')
             c.execute("INSERT INTO admins (username, password) VALUES (%s, %s)", ('admin', hashed_pw))
             c.execute("INSERT INTO admins (username, password) VALUES (%s, %s)", ('manager', generate_password_hash('manager123')))
-        conn.commit()
         conn.close()
     else:
         conn = get_db_connection()

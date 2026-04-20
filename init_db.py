@@ -5,7 +5,7 @@ Run this script to initialize the database with default admin users and sample p
 
 import os
 import sqlite3
-import psycopg2
+import psycopg
 from werkzeug.security import generate_password_hash
 
 DATABASE_URL = os.environ.get('DATABASE_URL')
@@ -16,8 +16,7 @@ if not USE_POSTGRES:
 
 def get_db_connection():
     if USE_POSTGRES:
-        conn = psycopg2.connect(DATABASE_URL)
-        return conn
+        return psycopg.connect(DATABASE_URL)
     else:
         conn = sqlite3.connect(DATABASE)
         return conn
@@ -73,7 +72,7 @@ def init_database():
         print("  Admin: admin / admin123")
         print("  Manager: manager / manager123")
     else:
-        print(f"Database already initialized with {count} admin user(s).")
+        print(f"Database already initialized with {count} admin user(s.).")
     
     conn.commit()
     conn.close()
