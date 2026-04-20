@@ -56,8 +56,10 @@ def init_db():
                       description TEXT,
                       image TEXT)''')
         conn.commit()
-        c.execute("SELECT COUNT(*) FROM admins")
-        if c.fetchone()[0] == 0:
+        c.execute("SELECT COUNT(*) as count FROM admins")
+        row = c.fetchone()
+        count = row['count']
+        if count == 0:
             hashed_pw = generate_password_hash('admin123')
             c.execute("INSERT INTO admins (username, password) VALUES (%s, %s)", ('admin', hashed_pw))
             c.execute("INSERT INTO admins (username, password) VALUES (%s, %s)", ('manager', generate_password_hash('manager123')))
@@ -75,8 +77,10 @@ def init_db():
                       price REAL NOT NULL,
                       description TEXT,
                       image TEXT)''')
-        c.execute("SELECT COUNT(*) FROM admins")
-        if c.fetchone()[0] == 0:
+        c.execute("SELECT COUNT(*) as count FROM admins")
+        row = c.fetchone()
+        count = row['count'] if hasattr(row, '__getitem__') and isinstance(row, dict) else row[0]
+        if count == 0:
             hashed_pw = generate_password_hash('admin123')
             c.execute("INSERT INTO admins (username, password) VALUES (?, ?)", ('admin', hashed_pw))
             c.execute("INSERT INTO admins (username, password) VALUES (?, ?)", ('manager', generate_password_hash('manager123')))
