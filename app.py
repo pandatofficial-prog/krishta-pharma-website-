@@ -1,20 +1,25 @@
 import os
-from flask import Flask, render_template, request, redirect, url_for, session, flash
+import time
+import logging
+from flask import Flask, render_template, request, redirect, url_for, session, flash, send_from_directory
 from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash, check_password_hash
 import sqlite3
 import psycopg2
 import psycopg2.extras
 
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'krishat_pharma_secret_key_2024')
 
-UPLOAD_FOLDER = os.path.join('static', 'uploads')
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+# Use /tmp on Render (writable), local filesystem otherwise
+if os.environ.get('RENDER_SERVICE_ID'):
+    UPLOAD_FOLDER = '/tmp/uploads'
+else:
+    UPLOAD_FOLDER = os.path.join('static', 'uploads')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
-if not os.path.exists(UPLOAD_FOLDER):
-    os.makedirs(UPLOAD_FOLDER)
 
 DATABASE_URL = os.environ.get('DATABASE_URL')
 USE_POSTGRES = DATABASE_URL is not None
@@ -24,8 +29,7 @@ if not USE_POSTGRES:
 
 def get_db_connection():
     if USE_POSTGRES:
-        conn = psycopg2.connect(DATABASE_URL, cursor_factory=psycopg2.extras.DictCursor)
-        return conn
+        return psycopg2.connect(DATABASE_URL, cursor_factory=psycopg2.extras.DictCursor)
     else:
         conn = sqlite3.connect(DATABASE)
         conn.row_factory = sqlite3.Row
@@ -73,11 +77,39 @@ def init_db():
         conn.commit()
         conn.close()
 
-# Initialize database on application startup
-init_db()
+# Initialize DB with retry (Render DB may not be ready immediately)
+def init_db_retry(max_retries=5, delay=3):
+    for attempt in range(max_retries):
+        try:
+            init_db()
+            logger.info("Database initialized")
+            return
+        except Exception as e:
+            logger.warning(f"DB init attempt {attempt+1} failed: {e}")
+            if attempt < max_retries - 1:
+                time.sleep(delay)
+                delay *= 2
+            else:
+                logger.error("DB initialization failed after retries")
+                raise
+
+try:
+    init_db_retry()
+except Exception as e:
+    logger.error(f"Fatal error during startup: {e}")
+    exit(1)
 
 def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'png', 'jpg', 'jpeg', 'gif'}
+
+def ensure_upload_folder():
+    try:
+        if not os.path.exists(app.config['UPLOAD_FOLDER']):
+            os.makedirs(app.config['UPLOAD_FOLDER'])
+        return True
+    except Exception as e:
+        logger.error(f"Cannot create upload folder: {e}")
+        return False
 
 @app.route('/')
 def index():
@@ -145,18 +177,15 @@ def contact_alt():
 def login():
     if 'admin_id' in session:
         return redirect(url_for('dashboard'))
-    
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        
         conn = get_db_connection()
         if USE_POSTGRES:
             admin = conn.execute('SELECT * FROM admins WHERE username = %s', (username,)).fetchone()
         else:
             admin = conn.execute('SELECT * FROM admins WHERE username = ?', (username,)).fetchone()
         conn.close()
-        
         if admin and check_password_hash(admin['password'], password):
             session['admin_id'] = admin['id']
             session['username'] = admin['username']
@@ -164,7 +193,6 @@ def login():
             return redirect(url_for('dashboard'))
         else:
             flash('Invalid username or password', 'danger')
-    
     return render_template('login.html')
 
 @app.route('/logout')
@@ -178,7 +206,6 @@ def dashboard():
     if 'admin_id' not in session:
         flash('Please login first', 'warning')
         return redirect(url_for('login'))
-    
     conn = get_db_connection()
     products = conn.execute('SELECT * FROM products').fetchall()
     conn.close()
@@ -189,18 +216,21 @@ def add_product():
     if 'admin_id' not in session:
         flash('Please login first', 'warning')
         return redirect(url_for('login'))
-    
     if request.method == 'POST':
         name = request.form['name']
         price = request.form['price']
         description = request.form['description']
         image = request.files['image']
-        
         filename = None
         if image and allowed_file(image.filename):
-            filename = secure_filename(image.filename)
-            image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        
+            if ensure_upload_folder():
+                filename = secure_filename(image.filename)
+                try:
+                    image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                except Exception as e:
+                    logger.error(f"Failed to save image: {e}")
+                    flash('Failed to save image. Check folder permissions.', 'danger')
+                    return redirect(url_for('add_product'))
         conn = get_db_connection()
         if USE_POSTGRES:
             conn.execute('INSERT INTO products (name, price, description, image) VALUES (%s, %s, %s, %s)',
@@ -210,10 +240,8 @@ def add_product():
                          (name, price, description, filename))
         conn.commit()
         conn.close()
-        
         flash('Product added successfully!', 'success')
         return redirect(url_for('dashboard'))
-    
     return render_template('add_product.html')
 
 @app.route('/edit_product/<int:id>', methods=['GET', 'POST'])
@@ -221,24 +249,26 @@ def edit_product(id):
     if 'admin_id' not in session:
         flash('Please login first', 'warning')
         return redirect(url_for('login'))
-    
     conn = get_db_connection()
     if USE_POSTGRES:
         product = conn.execute('SELECT * FROM products WHERE id = %s', (id,)).fetchone()
     else:
         product = conn.execute('SELECT * FROM products WHERE id = ?', (id,)).fetchone()
-    
     if request.method == 'POST':
         name = request.form['name']
         price = request.form['price']
         description = request.form['description']
         image = request.files['image']
-        
         filename = product['image']
         if image and allowed_file(image.filename):
-            filename = secure_filename(image.filename)
-            image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        
+            if ensure_upload_folder():
+                filename = secure_filename(image.filename)
+                try:
+                    image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                except Exception as e:
+                    logger.error(f"Failed to save image: {e}")
+                    flash('Failed to save image. Check folder permissions.', 'danger')
+                    return redirect(url_for('edit_product', id=id))
         if USE_POSTGRES:
             conn.execute('UPDATE products SET name = %s, price = %s, description = %s, image = %s WHERE id = %s',
                          (name, price, description, filename, id))
@@ -247,10 +277,8 @@ def edit_product(id):
                          (name, price, description, filename, id))
         conn.commit()
         conn.close()
-        
         flash('Product updated successfully!', 'success')
         return redirect(url_for('dashboard'))
-    
     conn.close()
     return render_template('edit_product.html', product=product)
 
@@ -259,27 +287,30 @@ def delete_product(id):
     if 'admin_id' not in session:
         flash('Please login first', 'warning')
         return redirect(url_for('login'))
-    
     conn = get_db_connection()
     if USE_POSTGRES:
         product = conn.execute('SELECT * FROM products WHERE id = %s', (id,)).fetchone()
     else:
         product = conn.execute('SELECT * FROM products WHERE id = ?', (id,)).fetchone()
-    
     if product and product['image']:
         image_path = os.path.join(app.config['UPLOAD_FOLDER'], product['image'])
         if os.path.exists(image_path):
-            os.remove(image_path)
-    
+            try:
+                os.remove(image_path)
+            except Exception as e:
+                logger.error(f"Failed to delete image {image_path}: {e}")
     if USE_POSTGRES:
         conn.execute('DELETE FROM products WHERE id = %s', (id,))
     else:
         conn.execute('DELETE FROM products WHERE id = ?', (id,))
     conn.commit()
     conn.close()
-    
     flash('Product deleted successfully!', 'success')
     return redirect(url_for('dashboard'))
+
+@app.route('/uploads/<filename>')
+def serve_upload(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

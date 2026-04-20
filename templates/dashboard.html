@@ -90,10 +90,10 @@
                             <tr>
                                 <td>{{ product.id }}</td>
                                 <td>
-                                    {% if product.image %}
-                                    <img src="{{ url_for('static', filename='uploads/' + product.image) }}" 
-                                         alt="{{ product.name }}" class="img-thumbnail" style="width: 60px; height: 60px; object-fit: cover;">
-                                    {% else %}
+                                     {% if product.image %}
+                                        <img src="{{ url_for('serve_upload', filename=product.image) }}"
+                                             alt="{{ product.name }}" class="img-thumbnail" style="width: 60px; height: 60px; object-fit: cover;">
+                                        {% else %}
                                     <img src="https://via.placeholder.com/60?text=No+Image" 
                                          alt="No Image" class="img-thumbnail">
                                     {% endif %}
